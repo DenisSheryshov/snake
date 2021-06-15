@@ -18,7 +18,7 @@ const snake = {
     }
   },
 
-  draw(color = '#0d0') {
+  draw(color) {
     ctx.fillStyle = color
     for (let cell of snake.body) {
       ctx.fillRect(...gameArea[cell[0]][cell[1]])
@@ -30,7 +30,6 @@ const snake = {
     const head = ' ' + snake.body[0] + ' '
 
     if (bodyStr.includes(head, head.length - 1)) {
-      console.log(`bodyStr: ${bodyStr}, head: ${head}`)
       timer.stop()
       snake.showFail()
     }
@@ -38,14 +37,14 @@ const snake = {
 
   showFail() {
     snake.crawl('stop')
-    border.create('#f00')
-    snake.draw('#f00')
+    border.create(colors.red)
+    snake.draw(colors.red)
 
     let flag = true
     let counter = 0
 
     const failAnim = setInterval(() => {
-      flag ? snake.draw() : snake.draw('#f00')
+      flag ? snake.draw(colors.green) : snake.draw(colors.red)
 
       if (counter < 4) {
         counter++
@@ -107,11 +106,12 @@ const snake = {
       const tail = snake.body.pop()
       ctx.clearRect(...gameArea[tail[0]][tail[1]])
     } else {
-      scoresOutput.textContent = +scoresOutput.textContent + apple.score
+      snake.scores.counter += apple.score
+      snake.scores.write()
       apple.create()
     }
 
-    ctx.fillStyle = '#0d0'
+    ctx.fillStyle = colors.green
     ctx.fillRect(...gameArea[snake.head()[0]][snake.head()[1]])
     snake.createEyes()
 
@@ -197,5 +197,27 @@ const snake = {
       }
     }
     ctx.fillRect(...gameArea[snake.body[1][0]][snake.body[1][1]])
+  },
+
+  scores: {
+    counter: 0,
+
+    area: [
+      cnv.width / 2,
+      cnv.width + border.width * 3,
+      cnv.width / 2,
+      cnv.height - cnv.width
+    ],
+
+    write() {
+      ctx.clearRect(...snake.scores.area)
+
+      ctx.fillStyle = colors.green
+      ctx.fillText(
+        'SCORES: ' + snake.scores.counter,
+        cnv.width / 2,
+        cnv.width + border.width * 3
+      )
+    }
   }
 }

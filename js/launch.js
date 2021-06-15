@@ -34,10 +34,11 @@ const control = () => {
 window.addEventListener('keydown', control)
 
 const startGame = () => {
-  border.create('#0d0')
-  scoresOutput.textContent = '0'
+  border.create(colors.green)
+  snake.scores.counter = 0
+  snake.scores.write()
   snake.init()
-  snake.draw()
+  snake.draw(colors.green)
   snake.crawl('start')
   apple.create()
   timer.start('new')

@@ -2,10 +2,16 @@ const cnv = document.body.querySelector('canvas')
 const ctx = cnv.getContext('2d')
 const scoresOutput = document.body.querySelector('#scores')
 
+const colors = {
+  green: '#00EE00',
+  yellow: '#FFFF00',
+  red: '#FF0000'
+}
+
 const border = {
   width: 8,
   isAnim: false,
-  lineDashOffset: 0,
+  lineDashOffset: cnv.width * 2,
 
   create(color) {
     ctx.strokeStyle = color
@@ -38,9 +44,9 @@ const border = {
     requestAnimationFrame(() => {
       ctx.setLineDash([cnv.width, cnv.width])
       ctx.lineDashOffset = border.lineDashOffset
-      border.lineDashOffset <= cnv.width * 2
-        ? (border.lineDashOffset += 5)
-        : (border.lineDashOffset = 0)
+      border.lineDashOffset >= 0
+        ? (border.lineDashOffset -= 5)
+        : (border.lineDashOffset = cnv.width * 2)
       border.remove()
       border.create()
 
@@ -49,14 +55,14 @@ const border = {
       } else {
         ctx.setLineDash([])
         ctx.lineDashOffset = 0
-        border.create('#0d0')
+        border.create(colors.green)
       }
     })
   }
 }
 
 cnv.width = 720 + border.width * 2
-cnv.height = cnv.width + 50
+cnv.height = cnv.width + 100
 
 const NUM_OF_PIXELS = 30
 const PXL_SIZE = (cnv.width - border.width * 2) / NUM_OF_PIXELS
@@ -78,3 +84,5 @@ for (let i = 0; i < NUM_OF_PIXELS; i++) {
 }
 
 ctx.lineWidth = border.width
+ctx.font = 'normal 60px VT323'
+ctx.textBaseline = 'top'

@@ -12,17 +12,5 @@ body {
 }
 
 canvas {
-  margin-top: 20px;
-  max-height: 85%;
-}
-
-p {
-  font-family: 'VT323', monospace;
-  font-size: 5vh;
-  color: #0d0;
-  display: flex;
-  justify-content: space-around;
-  width: 600px;
-  text-transform: uppercase;
-  user-select: none;
+  max-height: 100vh;
 }

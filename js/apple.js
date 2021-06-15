@@ -9,7 +9,7 @@ const apple = {
     const snakeBodyStr = snake.body.join(' ') + ' '
 
     if (!snakeBodyStr.includes(appleBodyStr)) {
-      ctx.fillStyle = 'yellow'
+      ctx.fillStyle = colors.yellow
       ctx.fillRect(...gameArea[apple.body[0]][apple.body[1]])
       apple.createTime = new Date().getTime()
       apple.freshMeter()
@@ -29,7 +29,7 @@ const apple = {
 
       apple.score = 13 - Math.floor(freshMeterWidth / 60)
 
-      ctx.fillStyle = 'yellow'
+      ctx.fillStyle = colors.yellow
       ctx.fillRect(0, cnv.width + border.width, cnv.width, border.width)
       ctx.clearRect(0, cnv.width + border.width, freshMeterWidth, border.width)
 
