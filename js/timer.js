@@ -31,6 +31,7 @@ const timer = {
         timer.totalTime = timer.sessionTime + timer.gameTime
       }
       timer.write(timer.calcTime(timer.totalTime))
+      snake.scores.write()
     }, 100)
 
     border.isAnim = false

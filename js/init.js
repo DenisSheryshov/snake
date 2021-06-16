@@ -67,7 +67,7 @@ const NUM_OF_PIXELS = 30
 const PXL_SIZE = (cnv.width - border.width * 2) / NUM_OF_PIXELS
 
 ctx.lineWidth = border.width
-ctx.font = 'normal 60px VT323'
+ctx.font = 'normal 50px AnotherCastle3'
 ctx.textBaseline = 'top'
 
 const paintPixel = (x, y, color) => {
