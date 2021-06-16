@@ -65,22 +65,6 @@ cnv.height = cnv.width + 100
 
 const NUM_OF_PIXELS = 30
 const PXL_SIZE = (cnv.width - border.width * 2) / NUM_OF_PIXELS
-const SPEED = 400
-
-const gameArea = []
-
-for (let i = 0; i < NUM_OF_PIXELS; i++) {
-  const row = []
-  for (let j = 0; j < NUM_OF_PIXELS; j++) {
-    row.push([
-      PXL_SIZE * i + border.width,
-      PXL_SIZE * j + border.width,
-      PXL_SIZE,
-      PXL_SIZE
-    ])
-  }
-  gameArea.push(row)
-}
 
 ctx.lineWidth = border.width
 ctx.font = 'normal 60px VT323'

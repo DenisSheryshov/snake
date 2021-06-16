@@ -5,23 +5,11 @@ const snake = {
     snake.body = [...snake.defaultSnakeBody]
     snake.currentMoving = 'x'
     snake.dir = 'right'
-  },
-
-  head(param) {
-    if (param != 'abs') {
-      return snake.body[0]
-    } else {
-      return {
-        x: gameArea[snake.body[0][0]][snake.body[0][1]][0],
-        y: gameArea[snake.body[0][0]][snake.body[0][1]][1]
-      }
-    }
+    snake.speed = 400
   },
 
   draw(color) {
-    // ctx.fillStyle = color
     for (let pxl of snake.body) {
-      // ctx.fillRect(...gameArea[cell[0]][cell[1]])
       paintPixel(...pxl, color)
     }
   },
@@ -54,9 +42,6 @@ const snake = {
         clearInterval(failAnim)
 
         setTimeout(() => {
-          // for (let cell of snake.body) {
-          //   ctx.clearRect(...gameArea[cell[0]][cell[1]])
-          // }
           snake.draw(null)
           apple.delete()
           startGame()
@@ -66,33 +51,23 @@ const snake = {
   },
 
   step() {
+    const [x, y] = snake.body[0]
+
     switch (snake.dir) {
       case 'right': {
-        snake.body.unshift([
-          snake.head()[0] < NUM_OF_PIXELS - 1 ? snake.head()[0] + 1 : 0,
-          snake.head()[1]
-        ])
+        snake.body.unshift([x < NUM_OF_PIXELS - 1 ? x + 1 : 0, y])
         break
       }
       case 'left': {
-        snake.body.unshift([
-          snake.head()[0] > 0 ? snake.head()[0] - 1 : NUM_OF_PIXELS - 1,
-          snake.head()[1]
-        ])
+        snake.body.unshift([x > 0 ? x - 1 : NUM_OF_PIXELS - 1, y])
         break
       }
       case 'up': {
-        snake.body.unshift([
-          snake.head()[0],
-          snake.head()[1] > 0 ? snake.head()[1] - 1 : NUM_OF_PIXELS - 1
-        ])
+        snake.body.unshift([x, y > 0 ? y - 1 : NUM_OF_PIXELS - 1])
         break
       }
       case 'down': {
-        snake.body.unshift([
-          snake.head()[0],
-          snake.head()[1] < NUM_OF_PIXELS - 1 ? snake.head()[1] + 1 : 0
-        ])
+        snake.body.unshift([x, y < NUM_OF_PIXELS - 1 ? y + 1 : 0])
         break
       }
     }
@@ -103,20 +78,21 @@ const snake = {
       snake.currentMoving = 'y'
     }
 
-    if (snake.head() + '' != apple.body + '') {
+    if (snake.body[0] + '' != apple.body + '') {
       //apple isn't eaten?
-      // const tail = snake.body.pop()
-      // ctx.clearRect(...gameArea[tail[0]][tail[1]])
       paintPixel(...snake.body.pop(), null)
     } else {
       snake.scores.counter += apple.score
       snake.scores.write()
       apple.create()
+
+      if (snake.speed > 100) {
+        snake.speed -= 10
+        snake.crawl('stop')
+        snake.crawl('start')
+      }
     }
 
-    // ctx.fillStyle = colors.green
-    // ctx.fillRect(...gameArea[snake.head()[0]][snake.head()[1]])
-    // const head = snake.body[0]
     paintPixel(...snake.body[0], colors.green)
     snake.createEyes()
     snake.checkFail()
@@ -124,7 +100,7 @@ const snake = {
 
   crawl(cmd) {
     if (cmd == 'start') {
-      snake.moving = setInterval(snake.step, SPEED)
+      snake.moving = setInterval(snake.step, snake.speed)
     } else if (cmd == 'stop') {
       clearInterval(snake.moving)
     }
@@ -147,27 +123,19 @@ const snake = {
   createEyes() {
     const EYE_SIZE = PXL_SIZE / 4
     const EYE_PADDING = PXL_SIZE / 6
+    const [x, y] = snake.body[0].map(i => i * PXL_SIZE + border.width)
 
     const remove = (leftX, leftY, rightX, rightY) => {
-      ctx.clearRect(
-        snake.head('abs').x + PXL_SIZE + leftX,
-        snake.head('abs').y + leftY,
-        EYE_SIZE,
-        EYE_SIZE
-      )
-      ctx.clearRect(
-        snake.head('abs').x + PXL_SIZE + rightX,
-        snake.head('abs').y + rightY,
-        EYE_SIZE,
-        EYE_SIZE
-      )
+      ctx.clearRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
+      ctx.clearRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
     }
+
     switch (snake.dir) {
       case 'right': {
         remove(
-          -(EYE_SIZE * 2),
+          -(EYE_SIZE + EYE_PADDING),
           EYE_PADDING,
-          -(EYE_SIZE * 2),
+          -(EYE_SIZE + EYE_PADDING),
           EYE_SIZE + EYE_PADDING * 2
         )
         break
@@ -175,9 +143,9 @@ const snake = {
       case 'up': {
         remove(
           -(PXL_SIZE - EYE_PADDING),
-          EYE_SIZE,
+          EYE_PADDING,
           -(EYE_SIZE + EYE_PADDING),
-          EYE_SIZE
+          EYE_PADDING
         )
         break
       }
@@ -200,7 +168,6 @@ const snake = {
         break
       }
     }
-    // ctx.fillRect(...gameArea[snake.body[1][0]][snake.body[1][1]])
     paintPixel(...snake.body[1], colors.green)
   },
 

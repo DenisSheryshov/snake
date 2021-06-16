@@ -9,8 +9,6 @@ const apple = {
     const snakeBodyStr = snake.body.join(' ') + ' '
 
     if (!snakeBodyStr.includes(appleBodyStr)) {
-      // ctx.fillStyle = colors.yellow
-      // ctx.fillRect(...gameArea[apple.body[0]][apple.body[1]])
       paintPixel(...apple.body, colors.yellow)
       apple.createTime = new Date().getTime()
       apple.freshMeter()
@@ -21,13 +19,13 @@ const apple = {
 
   delete() {
     apple.createTime = null
-    // ctx.clearRect(...gameArea[apple.body[0]][apple.body[1]])
     paintPixel(...apple.body, null)
   },
 
   freshMeter() {
     requestAnimationFrame(() => {
-      const freshMeterWidth = (new Date().getTime() - apple.createTime) / 20
+      const freshMeterWidth =
+        (new Date().getTime() - apple.createTime) / (snake.speed / 15)
 
       apple.score = 13 - Math.floor(freshMeterWidth / 60)
 
