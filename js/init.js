@@ -1,6 +1,5 @@
 const cnv = document.body.querySelector('canvas')
 const ctx = cnv.getContext('2d')
-const scoresOutput = document.body.querySelector('#scores')
 
 const colors = {
   green: '#00EE00',
@@ -86,3 +85,19 @@ for (let i = 0; i < NUM_OF_PIXELS; i++) {
 ctx.lineWidth = border.width
 ctx.font = 'normal 60px VT323'
 ctx.textBaseline = 'top'
+
+const paintPixel = (x, y, color) => {
+  const pxl = [
+    border.width + PXL_SIZE * x,
+    border.width + PXL_SIZE * y,
+    PXL_SIZE,
+    PXL_SIZE
+  ]
+
+  if (color) {
+    ctx.fillStyle = color
+    ctx.fillRect(...pxl)
+  } else {
+    ctx.clearRect(...pxl)
+  }
+}

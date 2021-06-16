@@ -19,9 +19,10 @@ const snake = {
   },
 
   draw(color) {
-    ctx.fillStyle = color
-    for (let cell of snake.body) {
-      ctx.fillRect(...gameArea[cell[0]][cell[1]])
+    // ctx.fillStyle = color
+    for (let pxl of snake.body) {
+      // ctx.fillRect(...gameArea[cell[0]][cell[1]])
+      paintPixel(...pxl, color)
     }
   },
 
@@ -53,9 +54,10 @@ const snake = {
         clearInterval(failAnim)
 
         setTimeout(() => {
-          for (let cell of snake.body) {
-            ctx.clearRect(...gameArea[cell[0]][cell[1]])
-          }
+          // for (let cell of snake.body) {
+          //   ctx.clearRect(...gameArea[cell[0]][cell[1]])
+          // }
+          snake.draw(null)
           apple.delete()
           startGame()
         }, 1000)
@@ -103,18 +105,20 @@ const snake = {
 
     if (snake.head() + '' != apple.body + '') {
       //apple isn't eaten?
-      const tail = snake.body.pop()
-      ctx.clearRect(...gameArea[tail[0]][tail[1]])
+      // const tail = snake.body.pop()
+      // ctx.clearRect(...gameArea[tail[0]][tail[1]])
+      paintPixel(...snake.body.pop(), null)
     } else {
       snake.scores.counter += apple.score
       snake.scores.write()
       apple.create()
     }
 
-    ctx.fillStyle = colors.green
-    ctx.fillRect(...gameArea[snake.head()[0]][snake.head()[1]])
+    // ctx.fillStyle = colors.green
+    // ctx.fillRect(...gameArea[snake.head()[0]][snake.head()[1]])
+    // const head = snake.body[0]
+    paintPixel(...snake.body[0], colors.green)
     snake.createEyes()
-
     snake.checkFail()
   },
 
@@ -196,7 +200,8 @@ const snake = {
         break
       }
     }
-    ctx.fillRect(...gameArea[snake.body[1][0]][snake.body[1][1]])
+    // ctx.fillRect(...gameArea[snake.body[1][0]][snake.body[1][1]])
+    paintPixel(...snake.body[1], colors.green)
   },
 
   scores: {
