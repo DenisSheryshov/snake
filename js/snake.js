@@ -6,6 +6,7 @@ const snake = {
     snake.currentMoving = 'x'
     snake.dir = 'right'
     snake.speed = 400
+    snake.isAlive = true
   },
 
   draw(color) {
@@ -20,6 +21,7 @@ const snake = {
 
     if (bodyStr.includes(head, head.length - 1)) {
       timer.stop()
+      snake.isAlive = false
       snake.showFail()
     }
   },
@@ -87,13 +89,17 @@ const snake = {
       apple.create()
 
       if (snake.speed > 100) {
-        snake.speed -= 10
+        snake.speed -= 150
         snake.crawl('stop')
         snake.crawl('start')
+      } else {
+        snake.setFire()
       }
     }
 
-    paintPixel(...snake.body[0], colors.green)
+    snake.headColor = colors[snake.onFire ? 'blue' : 'green']
+    paintPixel(...snake.body[0], snake.headColor)
+
     snake.createEyes()
     snake.checkFail()
   },
@@ -125,14 +131,20 @@ const snake = {
     const EYE_PADDING = PXL_SIZE / 6
     const [x, y] = snake.body[0].map(i => i * PXL_SIZE + border.width)
 
-    const remove = (leftX, leftY, rightX, rightY) => {
-      ctx.clearRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
-      ctx.clearRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
+    const drawEyes = (leftX, leftY, rightX, rightY) => {
+      if (!snake.onFire) {
+        ctx.clearRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
+        ctx.clearRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
+      } else {
+        ctx.fillStyle = colors.yellow
+        ctx.fillRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
+        ctx.fillRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
+      }
     }
 
     switch (snake.dir) {
       case 'right': {
-        remove(
+        drawEyes(
           -(EYE_SIZE + EYE_PADDING),
           EYE_PADDING,
           -(EYE_SIZE + EYE_PADDING),
@@ -141,7 +153,7 @@ const snake = {
         break
       }
       case 'up': {
-        remove(
+        drawEyes(
           -(PXL_SIZE - EYE_PADDING),
           EYE_PADDING,
           -(EYE_SIZE + EYE_PADDING),
@@ -150,7 +162,7 @@ const snake = {
         break
       }
       case 'left': {
-        remove(
+        drawEyes(
           -(PXL_SIZE - EYE_PADDING),
           EYE_PADDING,
           -(PXL_SIZE - EYE_PADDING),
@@ -159,7 +171,7 @@ const snake = {
         break
       }
       case 'down': {
-        remove(
+        drawEyes(
           -(PXL_SIZE - EYE_PADDING),
           EYE_SIZE + EYE_PADDING * 2,
           -(EYE_SIZE + EYE_PADDING),
@@ -168,7 +180,7 @@ const snake = {
         break
       }
     }
-    paintPixel(...snake.body[1], colors.green)
+    paintPixel(...snake.body[1], snake.headColor)
   },
 
   scores: {
@@ -191,5 +203,33 @@ const snake = {
         cnv.width + border.width * 3
       )
     }
+  },
+
+  setFire() {
+    snake.onFire = true
+    snake.draw(colors.blue)
+    // apple.score = apple.score * 3
+
+    if (snake.fireTime) {
+      clearTimeout(snake.fireTime)
+    }
+
+    const colorTransit = colors.blueToGreen()
+
+    const changeColor = () => {
+      const { value, done } = colorTransit.next()
+      snake.headColor = value
+      snake.draw(snake.headColor)
+      snake.createEyes()
+
+      if (!done && snake.isAlive) {
+        requestAnimationFrame(changeColor)
+      } else {
+        snake.onFire = false
+        snake.headColor = colors[snake.isAlive ? 'green' : 'red']
+        snake.draw(snake.headColor)
+      }
+    }
+    changeColor()
   }
 }

@@ -20,8 +20,8 @@ const control = () => {
   if (event.keyCode == 32) {
     if (!timer.onPause) {
       timer.pause()
-      snake.save()
       snake.crawl('stop')
+      snake.save()
     } else {
       timer.start('resume')
       snake.load()

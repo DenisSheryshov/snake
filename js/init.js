@@ -2,9 +2,17 @@ const cnv = document.body.querySelector('canvas')
 const ctx = cnv.getContext('2d')
 
 const colors = {
-  green: '#00EE00',
-  yellow: '#FFFF00',
-  red: '#FF0000'
+  green: 'rgb(0, 230, 0)',
+  yellow: 'rgb(255, 255, 0)',
+  red: 'rgb(255, 0, 0)',
+  blue: 'rgb(34, 34, 255)',
+
+  blueToGreen: function*() {
+    for (let i = 0; i <= 255; i++) {
+      yield `rgb(${i <= 34 ? 34 - i : 0}, ${i < 196 ? 34 + i : 230}, ${255 -
+        i})`
+    }
+  }
 }
 
 const border = {
