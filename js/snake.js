@@ -3,15 +3,20 @@ const snake = {
 
   init() {
     snake.body = [...snake.defaultSnakeBody]
-    snake.currentMoving = 'x'
+    snake.currentAxis = 'x'
     snake.dir = 'right'
     snake.speed = 400
     snake.isAlive = true
   },
 
   draw(color) {
-    for (let pxl of snake.body) {
-      paintPixel(...pxl, color)
+    const sortedBody = [...snake.body].sort((a, b) => {
+      return a[0] - b[0] == 0 ? b[1] - a[1] : a[0] - b[0]
+    }) // shadow overlay fix
+
+    ctx.fillStyle = color
+    for (let pxl of sortedBody) {
+      ctx.fillRect(...getPixel(...pxl), color)
     }
   },
 
@@ -28,14 +33,14 @@ const snake = {
 
   showFail() {
     snake.crawl('stop')
-    border.create(colors.red)
-    snake.draw(colors.red)
+    border.create(Color.RED)
+    snake.draw(Color.RED)
 
     let flag = true
     let counter = 0
 
     const failAnim = setInterval(() => {
-      flag ? snake.draw(colors.green) : snake.draw(colors.red)
+      flag ? snake.draw(Color.GREEN) : snake.draw(Color.RED)
 
       if (counter < 4) {
         counter++
@@ -52,56 +57,48 @@ const snake = {
     }, 500)
   },
 
-  step() {
-    const [x, y] = snake.body[0]
-
-    switch (snake.dir) {
-      case 'right': {
-        snake.body.unshift([x < NUM_OF_PIXELS - 1 ? x + 1 : 0, y])
-        break
-      }
-      case 'left': {
-        snake.body.unshift([x > 0 ? x - 1 : NUM_OF_PIXELS - 1, y])
-        break
-      }
-      case 'up': {
-        snake.body.unshift([x, y > 0 ? y - 1 : NUM_OF_PIXELS - 1])
-        break
-      }
-      case 'down': {
-        snake.body.unshift([x, y < NUM_OF_PIXELS - 1 ? y + 1 : 0])
-        break
-      }
-    }
-
-    if (snake.dir == 'right' || snake.dir == 'left') {
-      snake.currentMoving = 'x'
-    } else {
-      snake.currentMoving = 'y'
-    }
-
+  eatApple() {
     if (snake.body[0] + '' != apple.body + '') {
-      //apple isn't eaten?
-      paintPixel(...snake.body.pop(), null)
+    snake.body.pop()
     } else {
       snake.scores.counter += apple.score
       snake.scores.write()
       apple.create()
 
-      if (snake.speed > 100) {
-        snake.speed -= 150
-        snake.crawl('stop')
-        snake.crawl('start')
-      } else {
-        snake.setFire()
-      }
+      // if (snake.speed > 100) {
+      //   snake.speed -= 20
+      //   snake.crawl('stop')
+      //   snake.crawl('start')
+      // } else {
+      //   snake.setFire()
+      // }
+    }
+  },
+
+  step() {
+    const [x, y] = snake.body[0]
+
+    const newHead = {
+      right: [x < NUM_OF_PIXELS - 1 ? x + 1 : 0, y],
+      left: [x > 0 ? x - 1 : NUM_OF_PIXELS - 1, y],
+      up: [x, y > 0 ? y - 1 : NUM_OF_PIXELS - 1],
+      down: [x, y < NUM_OF_PIXELS - 1 ? y + 1 : 0]
     }
 
-    snake.headColor = colors[snake.onFire ? 'blue' : 'green']
-    paintPixel(...snake.body[0], snake.headColor)
+    snake.body.unshift(newHead[snake.dir])
 
-    snake.createEyes()
+    snake.currentAxis = snake.dir == 'right' || snake.dir == 'left' ? 'x' : 'y'
+
+    snake.eatApple()
+    // snake.body.pop()
+
+    // snake.headColor = Color[snake.onFire ? 'BLUE' : 'GREEN']
+    // paintPixel(...snake.body[0], snake.headColor)
+
+    // snake.createEyes()
     snake.checkFail()
+
+    const smoothStep = () => {}
   },
 
   crawl(cmd) {
@@ -115,121 +112,121 @@ const snake = {
   save() {
     snake.state = {
       body: snake.body,
-      currentMoving: snake.currentMoving,
+      currentAxis: snake.currentAxis,
       dir: snake.dir
     }
   },
 
   load() {
     snake.body = snake.state.body
-    snake.currentMoving = snake.state.currentMoving
+    snake.currentAxis = snake.state.currentAxis
     snake.dir = snake.state.dir
   },
 
-  createEyes() {
-    const EYE_SIZE = PXL_SIZE / 4
-    const EYE_PADDING = PXL_SIZE / 6
-    const [x, y] = snake.body[0].map(i => i * PXL_SIZE + border.width)
+  // createEyes() {
+  //   const EYE_SIZE = PXL_SIZE / 4
+  //   const EYE_PADDING = PXL_SIZE / 6
+  //   const [x, y] = snake.body[0].map(i => i * PXL_SIZE + border.WIDTH)
 
-    const drawEyes = (leftX, leftY, rightX, rightY) => {
-      if (!snake.onFire) {
-        ctx.clearRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
-        ctx.clearRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
-      } else {
-        ctx.fillStyle = colors.yellow
-        ctx.fillRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
-        ctx.fillRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
-      }
-    }
+  //   const drawEyes = (leftX, leftY, rightX, rightY) => {
+  //     if (!snake.onFire) {
+  //       ctx.clearRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
+  //       ctx.clearRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
+  //     } else {
+  //       ctx.fillStyle = Color.yellow
+  //       ctx.fillRect(x + PXL_SIZE + leftX, y + leftY, EYE_SIZE, EYE_SIZE)
+  //       ctx.fillRect(x + PXL_SIZE + rightX, y + rightY, EYE_SIZE, EYE_SIZE)
+  //     }
+  //   }
 
-    switch (snake.dir) {
-      case 'right': {
-        drawEyes(
-          -(EYE_SIZE + EYE_PADDING),
-          EYE_PADDING,
-          -(EYE_SIZE + EYE_PADDING),
-          EYE_SIZE + EYE_PADDING * 2
-        )
-        break
-      }
-      case 'up': {
-        drawEyes(
-          -(PXL_SIZE - EYE_PADDING),
-          EYE_PADDING,
-          -(EYE_SIZE + EYE_PADDING),
-          EYE_PADDING
-        )
-        break
-      }
-      case 'left': {
-        drawEyes(
-          -(PXL_SIZE - EYE_PADDING),
-          EYE_PADDING,
-          -(PXL_SIZE - EYE_PADDING),
-          EYE_SIZE + EYE_PADDING * 2
-        )
-        break
-      }
-      case 'down': {
-        drawEyes(
-          -(PXL_SIZE - EYE_PADDING),
-          EYE_SIZE + EYE_PADDING * 2,
-          -(EYE_SIZE + EYE_PADDING),
-          EYE_SIZE + EYE_PADDING * 2
-        )
-        break
-      }
-    }
-    paintPixel(...snake.body[1], snake.headColor)
-  },
+  //   switch (snake.dir) {
+  //     case 'right': {
+  //       drawEyes(
+  //         -(EYE_SIZE + EYE_PADDING),
+  //         EYE_PADDING,
+  //         -(EYE_SIZE + EYE_PADDING),
+  //         EYE_SIZE + EYE_PADDING * 2
+  //       )
+  //       break
+  //     }
+  //     case 'up': {
+  //       drawEyes(
+  //         -(PXL_SIZE - EYE_PADDING),
+  //         EYE_PADDING,
+  //         -(EYE_SIZE + EYE_PADDING),
+  //         EYE_PADDING
+  //       )
+  //       break
+  //     }
+  //     case 'left': {
+  //       drawEyes(
+  //         -(PXL_SIZE - EYE_PADDING),
+  //         EYE_PADDING,
+  //         -(PXL_SIZE - EYE_PADDING),
+  //         EYE_SIZE + EYE_PADDING * 2
+  //       )
+  //       break
+  //     }
+  //     case 'down': {
+  //       drawEyes(
+  //         -(PXL_SIZE - EYE_PADDING),
+  //         EYE_SIZE + EYE_PADDING * 2,
+  //         -(EYE_SIZE + EYE_PADDING),
+  //         EYE_SIZE + EYE_PADDING * 2
+  //       )
+  //       break
+  //     }
+  //   }
+  //   paintPixel(...snake.body[1], snake.headColor)
+  // },
 
   scores: {
     counter: 0,
 
     area: [
       cnv.width / 2,
-      cnv.width + border.width * 3,
+      cnv.width + border.WIDTH * 3,
       cnv.width / 2,
       cnv.height - cnv.width
     ],
 
     write() {
-      ctx.clearRect(...snake.scores.area)
+      // ctx.clearRect(...snake.scores.area)
 
-      ctx.fillStyle = colors.green
+      ctx.fillStyle = Color.GREEN
       ctx.fillText(
         'SCORES: ' + snake.scores.counter,
         cnv.width / 2,
-        cnv.width + border.width * 3
+        cnv.width + border.WIDTH * 3
       )
     }
-  },
-
-  setFire() {
-    snake.onFire = true
-    snake.draw(colors.blue)
-    // apple.score = apple.score * 3
-
-    if (snake.fireTime) {
-      clearTimeout(snake.fireTime)
-    }
-
-    const colorTransit = colors.blueToGreen()
-
-    const changeColor = () => {
-      const { value, done } = colorTransit.next()
-      snake.headColor = value
-      snake.draw(snake.headColor)
-      snake.createEyes()
-
-      if (!done && snake.isAlive) {
-        requestAnimationFrame(changeColor)
-      } else {
-        snake.onFire = false
-        snake.headColor = colors[snake.isAlive ? 'green' : 'red']
-        snake.draw(snake.headColor)
-      }
-    }
-    changeColor()
   }
+
+  // setFire() {
+  //   snake.onFire = true
+  //   snake.draw(Color.BLUE)
+  //   // apple.score = apple.score * 3
+
+  //   if (snake.fireTime) {
+  //     clearTimeout(snake.fireTime)
+  //   }
+
+  //   const colorTransit = Color.BLUEToGREEN()
+
+  //   const changeColor = () => {
+  //     const { value, done } = colorTransit.next()
+  //     snake.headColor = value
+  //     snake.draw(snake.headColor)
+  //     snake.createEyes()
+
+  //     if (!done && snake.isAlive) {
+  //       requestAnimationFrame(changeColor)
+  //     } else {
+  //       snake.onFire = false
+  //       snake.headColor = Color[snake.isAlive ? 'GREEN' : 'RED']
+  //       snake.draw(snake.headColor)
+  //     }
+  //   }
+  //   changeColor()
+  // }
 }

@@ -1,7 +1,7 @@
 const timer = {
   area: [
     0,
-    cnv.width + border.width * 3,
+    cnv.width + border.WIDTH * 3,
     cnv.width / 2,
     cnv.height - cnv.width
   ],
@@ -30,8 +30,9 @@ const timer = {
       } else if (param == 'resume') {
         timer.totalTime = timer.sessionTime + timer.gameTime
       }
-      timer.write(timer.calcTime(timer.totalTime))
-      snake.scores.write()
+      // timer.write(timer.calcTime(timer.totalTime))
+      timer.time = timer.calcTime(timer.totalTime)
+      // snake.scores.write()
     }, 100)
 
     border.isAnim = false
@@ -46,26 +47,24 @@ const timer = {
   pause() {
     clearInterval(timer.tick)
     timer.gameTime = timer.totalTime
-    let flag = true
+    // let flag = true
 
-    timer.showPause = setInterval(() => {
-      if (flag) {
-        timer.write('PAUSE')
-      } else {
-        timer.write(timer.calcTime(timer.totalTime))
-      }
-      flag = !flag
-    }, 1000)
+    // timer.showPause = setInterval(() => {
+    //   if (flag) {
+    //     timer.write('PAUSE')
+    //   } else {
+    //     timer.write(timer.calcTime(timer.totalTime))
+    //   }
+    //   flag = !flag
+    // }, 1000)
 
     border.isAnim = true
     border.anim()
   },
 
-  write(txt) {
-    ctx.clearRect(...timer.area)
-
-    ctx.fillStyle = colors.green
-    ctx.fillText('TIME: ' + txt, 0, cnv.width + border.width * 3)
+  write() {
+    ctx.fillStyle = Color.GREEN
+    ctx.fillText('TIME: ' + timer.time, 0, cnv.width + border.WIDTH * 3)
   },
 
   onPause: false
