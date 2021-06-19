@@ -4,8 +4,8 @@ const snake = {
   init() {
     snake.body = [...snake.defaultSnakeBody]
     snake.currentAxis = 'x'
-    snake.dir = 'right'
-    snake.speed = 400
+    snake.course = 'right'
+    snake.speed = 1000
     snake.isAlive = true
   },
 
@@ -16,7 +16,24 @@ const snake = {
 
     ctx.fillStyle = color
     for (let pxl of sortedBody) {
-      ctx.fillRect(...getPixel(...pxl), color)
+      ctx.fillRect(...getPixel(...pxl))
+    }
+    // console.log(sortedBody);
+  },
+
+  clear() {
+    for (let pxl of snake.body) {
+      // const [x, y] = getPixel(...pxl)
+      const x = getPixel(...pxl)[0]
+      const y = getPixel(...pxl)[1]
+      // ctx.clearRect(0, 0, cnv.width, cnv.height)
+      // console.log(x, y);
+      ctx.clearRect(
+        x - (PXL_SIZE + Shadow.OFFSET + Shadow.BLUR),
+        y - Shadow.OFFSET - Shadow.BLUR,
+        PXL_SIZE + Shadow.OFFSET + Shadow.BLUR,
+        PXL_SIZE + Shadow.OFFSET + Shadow.BLUR
+      )
     }
   },
 
@@ -33,7 +50,7 @@ const snake = {
 
   showFail() {
     snake.crawl('stop')
-    border.create(Color.RED)
+    border.draw(Color.RED)
     snake.draw(Color.RED)
 
     let flag = true
@@ -59,7 +76,7 @@ const snake = {
 
   eatApple() {
     if (snake.body[0] + '' != apple.body + '') {
-    snake.body.pop()
+      snake.body.pop()
     } else {
       snake.scores.counter += apple.score
       snake.scores.write()
@@ -85,9 +102,10 @@ const snake = {
       down: [x, y < NUM_OF_PIXELS - 1 ? y + 1 : 0]
     }
 
-    snake.body.unshift(newHead[snake.dir])
+    snake.body.unshift(newHead[snake.course])
 
-    snake.currentAxis = snake.dir == 'right' || snake.dir == 'left' ? 'x' : 'y'
+    snake.currentAxis =
+      snake.course == 'right' || snake.course == 'left' ? 'x' : 'y'
 
     snake.eatApple()
     // snake.body.pop()
@@ -98,7 +116,28 @@ const snake = {
     // snake.createEyes()
     snake.checkFail()
 
-    const smoothStep = () => {}
+    // const smoothStep = () => {
+    //   let fillCounter = 0
+    //   const [x, y] = getPixel(...snake.body[0])
+
+    //   const fillPixel = () => {
+    //     // ctx.fillRect(x + PXL_SIZE, y, fillCounter, PXL_SIZE)
+    //     // ctx.clearRect(x + PXL_SIZE, y, PXL_SIZE, PXL_SIZE)
+    //     if (fillCounter < PXL_SIZE) {
+    //       fillCounter += 4
+    //     } else {
+    //       clearGameArea()
+    //       snake.draw()
+    //     }
+    //     ctx.fillRect(x + PXL_SIZE, y, fillCounter, PXL_SIZE)
+    //     requestAnimationFrame(fillPixel)
+    //   }
+    //   fillPixel()
+    // }
+    // smoothStep()
+
+    clearGameArea()
+    snake.draw(Color.GREEN)
   },
 
   crawl(cmd) {
@@ -113,14 +152,14 @@ const snake = {
     snake.state = {
       body: snake.body,
       currentAxis: snake.currentAxis,
-      dir: snake.dir
+      dir: snake.course
     }
   },
 
   load() {
     snake.body = snake.state.body
     snake.currentAxis = snake.state.currentAxis
-    snake.dir = snake.state.dir
+    snake.course = snake.state.dir
   },
 
   // createEyes() {
@@ -139,7 +178,7 @@ const snake = {
   //     }
   //   }
 
-  //   switch (snake.dir) {
+  //   switch (snake.course) {
   //     case 'right': {
   //       drawEyes(
   //         -(EYE_SIZE + EYE_PADDING),
@@ -191,7 +230,7 @@ const snake = {
     ],
 
     write() {
-      // ctx.clearRect(...snake.scores.area)
+      ctx.clearRect(...snake.scores.area)
 
       ctx.fillStyle = Color.GREEN
       ctx.fillText(

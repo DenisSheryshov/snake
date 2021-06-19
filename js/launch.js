@@ -18,7 +18,7 @@ const KeyCode = {
 }
 
 const control = () => {
-  snake.dir = KeyCode[snake.currentAxis][event.keyCode] || snake.dir
+  snake.course = KeyCode[snake.currentAxis][event.keyCode] || snake.course
 
   if (event.keyCode == 32) {
     if (!timer.onPause) {
@@ -36,19 +36,6 @@ const control = () => {
 
 window.addEventListener('keydown', control)
 
-const render = () => {
-  ctx.clearRect(0, 0, cnv.width, cnv.height)
-
-  apple.show()
-  snake.draw(Color.GREEN)
-
-  border.create(Color.GREEN)
-  timer.write()
-  snake.scores.write()
-
-  requestAnimationFrame(render)
-}
-
 const startGame = () => {
   snake.init()
   apple.create()
@@ -57,7 +44,11 @@ const startGame = () => {
 
   timer.start('new')
   snake.scores.counter = 0
-  render()
+  border.draw(Color.GREEN)
+  // border.isAnim = true
+  // border.anim()
 }
+
+document.body.append(cnv)
 
 startGame()

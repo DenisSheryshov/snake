@@ -1,4 +1,4 @@
-const cnv = document.body.querySelector('canvas')
+const cnv = document.createElement('canvas')
 const ctx = cnv.getContext('2d')
 
 const Color = {
@@ -16,10 +16,9 @@ const Color = {
 }
 
 const Shadow = {
-  COLOR: 'rgba(0, 0, 0, 0.7)',
-  BLUR: 5,
-  OFFSET_X: 7,
-  OFFSET_Y: -7
+  COLOR: 'rgba(20, 20, 20, 0.7)',
+  BLUR: 4,
+  OFFSET: 10
 }
 
 const border = {
@@ -27,50 +26,54 @@ const border = {
   isAnim: false,
   lineDashOffset: cnv.width * 2,
 
-  create(color) {
+  draw(color) {
     ctx.lineWidth = border.WIDTH
     ctx.strokeStyle = color
+
+    if (!border.size) {
+      border.size = cnv.width - border.WIDTH - Shadow.OFFSET - Shadow.BLUR
+    }
+
     ctx.strokeRect(
       border.WIDTH / 2,
-      border.WIDTH / 2 - Shadow.OFFSET_Y + Shadow.BLUR,
-      cnv.width - border.WIDTH - Shadow.OFFSET_X - Shadow.BLUR,
-      cnv.width - border.WIDTH + Shadow.OFFSET_Y - Shadow.BLUR
+      border.WIDTH / 2 + Shadow.OFFSET + Shadow.BLUR,
+      border.size,
+      border.size
     )
   },
 
-  remove() {
-    ctx.clearRect(0, 0, cnv.width, border.WIDTH)
+  clear() {
+    if (!border.WIDTH_SHDW) {
+      border.WIDTH_SHDW = border.WIDTH + Shadow.OFFSET + Shadow.BLUR
+    }
+
+    ctx.clearRect(0, 0, cnv.width, border.WIDTH_SHDW)
+    ctx.clearRect(0, 0, border.WIDTH_SHDW + 1, border.size)
+    ctx.clearRect(0, border.size, border.size, border.WIDTH_SHDW)
     ctx.clearRect(
-      cnv.width - border.WIDTH,
-      border.WIDTH,
-      border.WIDTH,
-      cnv.width - border.WIDTH
-    )
-    ctx.clearRect(0, border.WIDTH, border.WIDTH, cnv.width - border.WIDTH)
-    ctx.clearRect(
-      border.WIDTH,
-      cnv.width - border.WIDTH,
-      cnv.width - border.WIDTH * 2,
-      border.WIDTH
+      border.size,
+      border.WIDTH_SHDW,
+      border.WIDTH_SHDW,
+      border.size
     )
   },
 
   anim() {
     requestAnimationFrame(() => {
-      ctx.setLineDash([cnv.width, cnv.width])
+      ctx.setLineDash([border.size, border.size])
       ctx.lineDashOffset = border.lineDashOffset
       border.lineDashOffset >= 0
         ? (border.lineDashOffset -= 5)
-        : (border.lineDashOffset = cnv.width * 2)
-      border.remove()
-      border.create()
+        : (border.lineDashOffset = border.size * 2)
+      border.clear()
+      border.draw(Color.GREEN)
 
       if (border.isAnim) {
         border.anim()
       } else {
         ctx.setLineDash([])
         ctx.lineDashOffset = 0
-        border.create(Color.green)
+        border.draw(Color.green)
       }
     })
   }
@@ -80,7 +83,7 @@ const FIELD_SIZE = 720
 const NUM_OF_PIXELS = 30
 const PXL_SIZE = FIELD_SIZE / NUM_OF_PIXELS
 
-cnv.width = FIELD_SIZE + border.WIDTH * 2 + Shadow.OFFSET_X + Shadow.BLUR
+cnv.width = FIELD_SIZE + border.WIDTH * 2 + Shadow.OFFSET + Shadow.BLUR
 cnv.height = cnv.width + 100
 
 ctx.font = 'normal 55px AnotherCastle3'
@@ -88,14 +91,18 @@ ctx.textBaseline = 'top'
 
 ctx.shadowColor = Shadow.COLOR
 ctx.shadowBlur = Shadow.BLUR
-ctx.shadowOffsetX = Shadow.OFFSET_X
-ctx.shadowOffsetY = Shadow.OFFSET_Y
+ctx.shadowOffsetX = Shadow.OFFSET
+ctx.shadowOffsetY = -Shadow.OFFSET
 
 const getPixel = (x, y) => {
   return [
     border.WIDTH + PXL_SIZE * x,
-    Math.abs(Shadow.OFFSET_Y) + Shadow.BLUR + border.WIDTH + PXL_SIZE * y,
+    Shadow.OFFSET + Shadow.BLUR + border.WIDTH + PXL_SIZE * y,
     PXL_SIZE,
     PXL_SIZE
   ]
+}
+
+const clearGameArea = () => {
+  ctx.clearRect(0, 0, cnv.width, cnv.width)
 }

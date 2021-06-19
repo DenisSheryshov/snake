@@ -30,10 +30,10 @@ const timer = {
       } else if (param == 'resume') {
         timer.totalTime = timer.sessionTime + timer.gameTime
       }
-      // timer.write(timer.calcTime(timer.totalTime))
+      timer.write(timer.calcTime(timer.totalTime))
       timer.time = timer.calcTime(timer.totalTime)
-      // snake.scores.write()
-    }, 100)
+      snake.scores.write()
+    }, 200)
 
     border.isAnim = false
   },
@@ -63,6 +63,7 @@ const timer = {
   },
 
   write() {
+    ctx.clearRect(...timer.area)
     ctx.fillStyle = Color.GREEN
     ctx.fillText('TIME: ' + timer.time, 0, cnv.width + border.WIDTH * 3)
   },
