@@ -5,7 +5,7 @@ const snake = {
     snake.body = [...snake.defaultSnakeBody]
     snake.currentAxis = 'x'
     snake.course = 'right'
-    snake.speed = 1000
+    snake.speed = 300
     snake.isAlive = true
   },
 
@@ -18,30 +18,13 @@ const snake = {
     for (let pxl of sortedBody) {
       ctx.fillRect(...getPixel(...pxl))
     }
-    // console.log(sortedBody);
-  },
-
-  clear() {
-    for (let pxl of snake.body) {
-      // const [x, y] = getPixel(...pxl)
-      const x = getPixel(...pxl)[0]
-      const y = getPixel(...pxl)[1]
-      // ctx.clearRect(0, 0, cnv.width, cnv.height)
-      // console.log(x, y);
-      ctx.clearRect(
-        x - (PXL_SIZE + Shadow.OFFSET + Shadow.BLUR),
-        y - Shadow.OFFSET - Shadow.BLUR,
-        PXL_SIZE + Shadow.OFFSET + Shadow.BLUR,
-        PXL_SIZE + Shadow.OFFSET + Shadow.BLUR
-      )
-    }
   },
 
   checkFail() {
-    const bodyStr = snake.body.join(' ') + ' '
-    const head = ' ' + snake.body[0] + ' '
+    const snakeBody = [...snake.body]
+    const head = snakeBody.shift()
 
-    if (bodyStr.includes(head, head.length - 1)) {
+    if (snakeBody.some(item => item + '' == head + '')) {
       timer.stop()
       snake.isAlive = false
       snake.showFail()
@@ -50,14 +33,17 @@ const snake = {
 
   showFail() {
     snake.crawl('stop')
-    border.draw(Color.RED)
-    snake.draw(Color.RED)
 
-    let flag = true
+    let flag = false
     let counter = 0
 
     const failAnim = setInterval(() => {
-      flag ? snake.draw(Color.GREEN) : snake.draw(Color.RED)
+      // flag ? snake.draw(Color.GREEN) : snake.draw(Color.RED)
+
+      clearGameArea()
+      snake.draw(Color[flag ? 'GREEN' : 'RED'])
+      border.draw(Color[flag ? 'GREEN' : 'RED'])
+      apple.draw()
 
       if (counter < 4) {
         counter++
@@ -66,10 +52,11 @@ const snake = {
         clearInterval(failAnim)
 
         setTimeout(() => {
-          snake.draw(null)
-          apple.delete()
+          clearGameArea()
+          // snake.draw(null)
+          // apple.delete()
           startGame()
-        }, 1000)
+        }, 1500)
       }
     }, 500)
   },
@@ -78,7 +65,7 @@ const snake = {
     if (snake.body[0] + '' != apple.body + '') {
       snake.body.pop()
     } else {
-      snake.scores.counter += apple.score
+      snake.scores.total += apple.score
       snake.scores.write()
       apple.create()
 
@@ -116,28 +103,26 @@ const snake = {
     // snake.createEyes()
     snake.checkFail()
 
-    // const smoothStep = () => {
-    //   let fillCounter = 0
-    //   const [x, y] = getPixel(...snake.body[0])
-
-    //   const fillPixel = () => {
-    //     // ctx.fillRect(x + PXL_SIZE, y, fillCounter, PXL_SIZE)
-    //     // ctx.clearRect(x + PXL_SIZE, y, PXL_SIZE, PXL_SIZE)
-    //     if (fillCounter < PXL_SIZE) {
-    //       fillCounter += 4
-    //     } else {
-    //       clearGameArea()
-    //       snake.draw()
-    //     }
-    //     ctx.fillRect(x + PXL_SIZE, y, fillCounter, PXL_SIZE)
-    //     requestAnimationFrame(fillPixel)
-    //   }
-    //   fillPixel()
-    // }
-    // smoothStep()
-
     clearGameArea()
-    snake.draw(Color.GREEN)
+
+    // shadow overlay checkout
+    // if (snake.body[0][0] < apple.body[0] || snake.body[0][1] > apple.body[1]) {
+    //   snake.draw(Color.GREEN)
+    //   apple.draw()
+    // } else {
+    //   apple.draw()
+    //   snake.draw(Color.GREEN)
+    // }
+
+    if (snake.body[0][0] > apple.body[0] || snake.body[0][1] < apple.body[1]) {
+      apple.draw()
+      snake.draw(Color.GREEN)
+    } else {
+      snake.draw(Color.GREEN)
+      apple.draw()
+    }
+
+    border.draw(Color.GREEN)
   },
 
   crawl(cmd) {
@@ -220,7 +205,8 @@ const snake = {
   // },
 
   scores: {
-    counter: 0,
+    total: 0,
+    table: 0,
 
     area: [
       cnv.width / 2,
@@ -234,10 +220,14 @@ const snake = {
 
       ctx.fillStyle = Color.GREEN
       ctx.fillText(
-        'SCORES: ' + snake.scores.counter,
+        'SCORES: ' + snake.scores.table,
         cnv.width / 2,
         cnv.width + border.WIDTH * 3
       )
+      if (snake.scores.table < snake.scores.total) {
+        snake.scores.table++
+        setTimeout(snake.scores.write, 50)
+      }
     }
   }
 

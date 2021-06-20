@@ -56,27 +56,27 @@ const border = {
       border.WIDTH_SHDW,
       border.size
     )
-  },
+  } //,
 
-  anim() {
-    requestAnimationFrame(() => {
-      ctx.setLineDash([border.size, border.size])
-      ctx.lineDashOffset = border.lineDashOffset
-      border.lineDashOffset >= 0
-        ? (border.lineDashOffset -= 5)
-        : (border.lineDashOffset = border.size * 2)
-      border.clear()
-      border.draw(Color.GREEN)
+  // anim() {
+  //   requestAnimationFrame(() => {
+  //     ctx.setLineDash([border.size, border.size])
+  //     ctx.lineDashOffset = border.lineDashOffset
+  //     border.lineDashOffset >= 0
+  //       ? (border.lineDashOffset -= 5)
+  //       : (border.lineDashOffset = border.size * 2)
+  //     border.clear()
+  //     border.draw(Color.GREEN)
 
-      if (border.isAnim) {
-        border.anim()
-      } else {
-        ctx.setLineDash([])
-        ctx.lineDashOffset = 0
-        border.draw(Color.green)
-      }
-    })
-  }
+  //     if (border.isAnim) {
+  //       border.anim()
+  //     } else {
+  //       ctx.setLineDash([])
+  //       ctx.lineDashOffset = 0
+  //       border.draw(Color.green)
+  //     }
+  //   })
+  // }
 }
 
 const FIELD_SIZE = 720

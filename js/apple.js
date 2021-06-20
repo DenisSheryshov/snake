@@ -5,12 +5,10 @@ const apple = {
 
   create() {
     apple.body = [apple.rand(), apple.rand()]
-    const appleBodyStr = apple.body.toString() + ' '
-    const snakeBodyStr = snake.body.join(' ') + ' '
-
-    if (!snakeBodyStr.includes(appleBodyStr)) {
+    
+    if (!snake.body.some(item => item + '' == apple.body + '')) {
       apple.createTime = new Date().getTime()
-      // apple.freshMeter()
+      apple.freshMeter()
     } else {
       apple.create()
     }
@@ -26,22 +24,28 @@ const apple = {
       (new Date().getTime() - apple.createTime) / (snake.speed / 15)
 
     apple.score = 13 - Math.floor(lineLength / 60)
+    ctx.clearRect(
+      0,
+      cnv.width,
+      cnv.width,
+      border.WIDTH + Shadow.OFFSET + Shadow.BLUR * 2
+    )
 
     if (lineLength < FIELD_SIZE + border.WIDTH * 2) {
       ctx.fillStyle = Color.YELLOW
       ctx.fillRect(
         lineLength,
-        cnv.width + border.WIDTH - Shadow.OFFSET_Y,
+        cnv.width + border.WIDTH + Shadow.OFFSET,
         FIELD_SIZE + border.WIDTH * 2 - lineLength,
         border.WIDTH
       )
+
+      requestAnimationFrame(apple.freshMeter)
     }
   },
 
-  show() {
+  draw() {
     ctx.fillStyle = Color.YELLOW
     ctx.fillRect(...getPixel(...apple.body))
-
-    apple.freshMeter()
   }
 }

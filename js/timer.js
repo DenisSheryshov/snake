@@ -63,9 +63,11 @@ const timer = {
   },
 
   write() {
-    ctx.clearRect(...timer.area)
-    ctx.fillStyle = Color.GREEN
-    ctx.fillText('TIME: ' + timer.time, 0, cnv.width + border.WIDTH * 3)
+    if (timer.time) {
+      ctx.clearRect(...timer.area)
+      ctx.fillStyle = Color.GREEN
+      ctx.fillText('TIME: ' + timer.time, 0, cnv.width + border.WIDTH * 3)
+    }
   },
 
   onPause: false

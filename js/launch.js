@@ -43,10 +43,9 @@ const startGame = () => {
   snake.crawl('start')
 
   timer.start('new')
-  snake.scores.counter = 0
+  snake.scores.total = 0
+  snake.scores.table = 0
   border.draw(Color.GREEN)
-  // border.isAnim = true
-  // border.anim()
 }
 
 document.body.append(cnv)
