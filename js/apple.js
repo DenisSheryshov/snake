@@ -1,22 +1,16 @@
 const apple = {
-  rand() {
-    return Math.floor(Math.random() * NUM_OF_PIXELS)
-  },
-
   create() {
-    apple.body = [apple.rand(), apple.rand()]
-    
+    apple.body = [
+      Math.floor(Math.random() * NUM_OF_PIXELS),
+      Math.floor(Math.random() * NUM_OF_PIXELS)
+    ]
+
     if (!snake.body.some(item => item + '' == apple.body + '')) {
       apple.createTime = new Date().getTime()
       apple.freshMeter()
-    } else {
-      apple.create()
+      return
     }
-  },
-
-  delete() {
-    apple.createTime = null
-    ctx.clearRect(...getPixel(...apple.body))
+    apple.create()
   },
 
   freshMeter() {
@@ -24,6 +18,7 @@ const apple = {
       (new Date().getTime() - apple.createTime) / (snake.speed / 15)
 
     apple.score = 13 - Math.floor(lineLength / 60)
+
     ctx.clearRect(
       0,
       cnv.width,

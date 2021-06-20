@@ -1,8 +1,9 @@
 const snake = {
-  defaultSnakeBody: [[4, 15], [3, 15], [2, 15], [1, 15], [0, 15]],
+  DEFAULT_BODY: [[4, 15], [3, 15], [2, 15], [1, 15], [0, 15]],
+  MAX_SPEED: 100,
 
   init() {
-    snake.body = [...snake.defaultSnakeBody]
+    snake.body = [...snake.DEFAULT_BODY]
     snake.currentAxis = 'x'
     snake.course = 'right'
     snake.speed = 300
@@ -38,8 +39,6 @@ const snake = {
     let counter = 0
 
     const failAnim = setInterval(() => {
-      // flag ? snake.draw(Color.GREEN) : snake.draw(Color.RED)
-
       clearGameArea()
       snake.draw(Color[flag ? 'GREEN' : 'RED'])
       border.draw(Color[flag ? 'GREEN' : 'RED'])
@@ -53,8 +52,6 @@ const snake = {
 
         setTimeout(() => {
           clearGameArea()
-          // snake.draw(null)
-          // apple.delete()
           startGame()
         }, 1500)
       }
@@ -64,24 +61,26 @@ const snake = {
   eatApple() {
     if (snake.body[0] + '' != apple.body + '') {
       snake.body.pop()
-    } else {
-      snake.scores.total += apple.score
-      snake.scores.write()
-      apple.create()
+      return
+    }
 
-      // if (snake.speed > 100) {
-      //   snake.speed -= 20
-      //   snake.crawl('stop')
-      //   snake.crawl('start')
-      // } else {
-      //   snake.setFire()
-      // }
+    snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
+    snake.scores.write()
+    apple.create()
+
+    console.log(snake.speed)
+
+    if (snake.speed > snake.MAX_SPEED) {
+      snake.speed -= 200
+      snake.crawl('stop')
+      snake.crawl('start')
+    } else {
+      snake.powerMode()
     }
   },
 
   step() {
     const [x, y] = snake.body[0]
-
     const newHead = {
       right: [x < NUM_OF_PIXELS - 1 ? x + 1 : 0, y],
       left: [x > 0 ? x - 1 : NUM_OF_PIXELS - 1, y],
@@ -90,30 +89,18 @@ const snake = {
     }
 
     snake.body.unshift(newHead[snake.course])
-
     snake.currentAxis =
       snake.course == 'right' || snake.course == 'left' ? 'x' : 'y'
 
     snake.eatApple()
-    // snake.body.pop()
-
-    // snake.headColor = Color[snake.onFire ? 'BLUE' : 'GREEN']
-    // paintPixel(...snake.body[0], snake.headColor)
-
-    // snake.createEyes()
     snake.checkFail()
+    // snake.createEyes()
+
+    if (snake.onFire) return
 
     clearGameArea()
 
     // shadow overlay checkout
-    // if (snake.body[0][0] < apple.body[0] || snake.body[0][1] > apple.body[1]) {
-    //   snake.draw(Color.GREEN)
-    //   apple.draw()
-    // } else {
-    //   apple.draw()
-    //   snake.draw(Color.GREEN)
-    // }
-
     if (snake.body[0][0] > apple.body[0] || snake.body[0][1] < apple.body[1]) {
       apple.draw()
       snake.draw(Color.GREEN)
@@ -121,7 +108,6 @@ const snake = {
       snake.draw(Color.GREEN)
       apple.draw()
     }
-
     border.draw(Color.GREEN)
   },
 
@@ -226,36 +212,37 @@ const snake = {
       )
       if (snake.scores.table < snake.scores.total) {
         snake.scores.table++
-        setTimeout(snake.scores.write, 50)
+        setTimeout(snake.scores.write, 100)
       }
     }
+  },
+
+  powerMode() {
+    snake.onFire = true
+
+    if (snake.fireTime) {
+      clearTimeout(snake.fireTime)
+    }
+
+    const colorTransit = Color.blueToGreen()
+
+    const changeColor = () => {
+      const { value } = colorTransit.next()
+
+      // snake.createEyes()
+
+      if (value && snake.isAlive) {
+        clearGameArea()
+
+        snake.draw(value)
+        apple.draw()
+        border.draw(Color.GREEN)
+
+        snake.fireTime = setTimeout(changeColor, snake.MAX_SPEED)
+      } else {
+        snake.onFire = false
+      }
+    }
+    changeColor()
   }
-
-  // setFire() {
-  //   snake.onFire = true
-  //   snake.draw(Color.BLUE)
-  //   // apple.score = apple.score * 3
-
-  //   if (snake.fireTime) {
-  //     clearTimeout(snake.fireTime)
-  //   }
-
-  //   const colorTransit = Color.BLUEToGREEN()
-
-  //   const changeColor = () => {
-  //     const { value, done } = colorTransit.next()
-  //     snake.headColor = value
-  //     snake.draw(snake.headColor)
-  //     snake.createEyes()
-
-  //     if (!done && snake.isAlive) {
-  //       requestAnimationFrame(changeColor)
-  //     } else {
-  //       snake.onFire = false
-  //       snake.headColor = Color[snake.isAlive ? 'GREEN' : 'RED']
-  //       snake.draw(snake.headColor)
-  //     }
-  //   }
-  //   changeColor()
-  // }
 }

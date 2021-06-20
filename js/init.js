@@ -8,9 +8,13 @@ const Color = {
   BLUE: 'rgb(34, 34, 255)',
 
   blueToGreen: function*() {
-    for (let i = 0; i <= 255; i++) {
-      yield `rgb(${i <= 34 ? 34 - i : 0}, ${i < 196 ? 34 + i : 230}, ${255 -
-        i})`
+    // for (let i = 0; i <= 255; i++) {
+    //   yield `rgb(${i <= 34 ? 34 - i : 0}, ${i < 196 ? 34 + i : 230}, ${255 -
+    //     i})`
+
+    for (let i = 0; i <= 34; i++) {
+      yield `rgb(${34 - i},${Math.floor(34 + i * (196 / 34))},${255 -
+        Math.floor(i * 7.5)})`
     }
   }
 }

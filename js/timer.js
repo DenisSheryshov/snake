@@ -25,11 +25,14 @@ const timer = {
 
     timer.tick = setInterval(() => {
       timer.sessionTime = new Date().getTime() - timer.startTime
-      if (param == 'new') {
-        timer.totalTime = timer.sessionTime
-      } else if (param == 'resume') {
-        timer.totalTime = timer.sessionTime + timer.gameTime
+
+      const options = {
+        new: timer.sessionTime,
+        resume: timer.sessionTime + timer.gameTime
       }
+
+      timer.totalTime = options[param]
+
       timer.write(timer.calcTime(timer.totalTime))
       timer.time = timer.calcTime(timer.totalTime)
       snake.scores.write()
@@ -58,8 +61,8 @@ const timer = {
     //   flag = !flag
     // }, 1000)
 
-    border.isAnim = true
-    border.anim()
+    // border.isAnim = true
+    // border.anim()
   },
 
   write() {
