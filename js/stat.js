@@ -1,3 +1,38 @@
+const score = {
+  total: 0,
+  table: 0,
+
+  area: [
+    cnv.width / 2,
+    cnv.width + border.WIDTH * 3,
+    cnv.width / 2,
+    cnv.height - cnv.width
+  ],
+
+  write() {
+    ctx.clearRect(...score.area)
+
+    ctx.fillStyle = Color.GREEN
+    ctx.fillText(
+      'SCORES: ' + score.table,
+      cnv.width / 2,
+      cnv.width + border.WIDTH * 3
+    )
+    if (score.table < score.total) {
+      score.table++
+      setTimeout(score.write, 100)
+    }
+  },
+
+  // snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
+  // snake.scores.write()
+
+  earn() {
+    score.total += snake.onFire ? apple.score * 3 : apple.score
+    this.write
+  }
+}
+
 const timer = {
   area: [
     0,
@@ -35,7 +70,7 @@ const timer = {
 
       timer.write(timer.calcTime(timer.totalTime))
       timer.time = timer.calcTime(timer.totalTime)
-      snake.scores.write()
+      score.write()
     }, 200)
 
     border.isAnim = false

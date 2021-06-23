@@ -64,11 +64,12 @@ const snake = {
       return
     }
 
-    snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
-    snake.scores.write()
+    // snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
+    // snake.scores.write()
+    score.earn()
     apple.create()
 
-    console.log(snake.speed)
+    // console.log(snake.speed)
 
     if (snake.speed > snake.MAX_SPEED) {
       snake.speed -= 200
@@ -189,33 +190,6 @@ const snake = {
   //   }
   //   paintPixel(...snake.body[1], snake.headColor)
   // },
-
-  scores: {
-    total: 0,
-    table: 0,
-
-    area: [
-      cnv.width / 2,
-      cnv.width + border.WIDTH * 3,
-      cnv.width / 2,
-      cnv.height - cnv.width
-    ],
-
-    write() {
-      ctx.clearRect(...snake.scores.area)
-
-      ctx.fillStyle = Color.GREEN
-      ctx.fillText(
-        'SCORES: ' + snake.scores.table,
-        cnv.width / 2,
-        cnv.width + border.WIDTH * 3
-      )
-      if (snake.scores.table < snake.scores.total) {
-        snake.scores.table++
-        setTimeout(snake.scores.write, 100)
-      }
-    }
-  },
 
   powerMode() {
     snake.onFire = true

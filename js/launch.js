@@ -41,8 +41,8 @@ const startGame = () => {
   apple.create()
   snake.crawl('start')
   timer.start('new')
-  snake.scores.total = 0
-  snake.scores.table = 0
+  score.total = 0
+  score.table = 0
 }
 
 document.body.append(cnv)
