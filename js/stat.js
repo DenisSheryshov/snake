@@ -9,7 +9,7 @@ const score = {
     cnv.height - cnv.width
   ],
 
-  write() {
+  write(delay) {
     ctx.clearRect(...score.area)
 
     ctx.fillStyle = Color.GREEN
@@ -20,16 +20,18 @@ const score = {
     )
     if (score.table < score.total) {
       score.table++
-      setTimeout(score.write, 100)
+      if (score.table % 100 === 0) {
+        // console.log('score.table')
+        // apple.create()
+      }
+      setTimeout(score.write, delay)
     }
   },
 
-  // snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
-  // snake.scores.write()
-
   earn() {
     score.total += snake.onFire ? apple.score * 3 : apple.score
-    this.write
+    const delay = 1500 / (score.total - score.table)
+    score.write(delay)
   }
 }
 

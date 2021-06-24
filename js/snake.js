@@ -42,7 +42,7 @@ const snake = {
       clearGameArea()
       snake.draw(Color[flag ? 'GREEN' : 'RED'])
       border.draw(Color[flag ? 'GREEN' : 'RED'])
-      apple.draw()
+      apple.draw(Color.YELLOW)
 
       if (counter < 4) {
         counter++
@@ -64,20 +64,20 @@ const snake = {
       return
     }
 
-    // snake.scores.total += snake.onFire ? apple.score * 3 : apple.score
-    // snake.scores.write()
     score.earn()
-    apple.create()
-
-    // console.log(snake.speed)
 
     if (snake.speed > snake.MAX_SPEED) {
       snake.speed -= 200
       snake.crawl('stop')
       snake.crawl('start')
     } else {
-      snake.powerMode()
+      if (apple.score > 7) {
+        console.log(apple.score)
+        snake.powerMode()
+      }
     }
+
+    apple.create()
   },
 
   step() {
@@ -103,11 +103,11 @@ const snake = {
 
     // shadow overlay checkout
     if (snake.body[0][0] > apple.body[0] || snake.body[0][1] < apple.body[1]) {
-      apple.draw()
+      apple.draw(Color.YELLOW)
       snake.draw(Color.GREEN)
     } else {
       snake.draw(Color.GREEN)
-      apple.draw()
+      apple.draw(Color.YELLOW)
     }
     border.draw(Color.GREEN)
   },
@@ -209,7 +209,7 @@ const snake = {
         clearGameArea()
 
         snake.draw(value)
-        apple.draw()
+        apple.draw(Color.YELLOW)
         border.draw(Color.GREEN)
 
         snake.fireTime = setTimeout(changeColor, snake.MAX_SPEED)
