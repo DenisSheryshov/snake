@@ -26,11 +26,11 @@ const control = () => {
       snake.crawl('stop')
       snake.save()
     } else {
-      timer.start('resume')
+      timer.start()
       snake.load()
       snake.crawl('start')
+      baseApple.freshMeter()
     }
-    timer.onPause = !timer.onPause
   }
 }
 
@@ -38,11 +38,14 @@ window.addEventListener('keydown', control)
 
 const startGame = () => {
   snake.init()
-  apple.create()
+  baseApple.create()
+  baseApple.freshMeter()
   snake.crawl('start')
-  timer.start('new')
+  timer.start()
+  timer.allPausesLength = 0
   score.total = 0
   score.table = 0
+  score.apples = 0
 }
 
 document.body.append(cnv)
