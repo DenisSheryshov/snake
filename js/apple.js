@@ -7,6 +7,7 @@ class Apple {
 
     if (!snake.body.some(item => item + '' == this.body + '')) {
       this.createTime = new Date().getTime()
+      timer.allPausesLength = 0
       return
     }
     this.create()
