@@ -25,7 +25,6 @@ const snake = {
     const head = snakeBody.shift()
 
     if (snakeBody.some(item => item + '' == head + '')) {
-      clearInterval(snake.fireTime)
       timer.stop()
       snake.showFail()
     }
@@ -69,11 +68,7 @@ const snake = {
       snake.speed -= 200
       snake.crawl('stop')
       snake.crawl('start')
-    } else {
-      if (baseApple.score > 7) {
-        snake.powerMode()
-      }
-    }
+    } 
 
     baseApple.create()
     baseApple.freshMeter()
@@ -94,8 +89,6 @@ const snake = {
 
     snake.eatApple()
     snake.checkFail()
-
-    if (snake.onFire) return
 
     clearGameArea()
 
@@ -189,31 +182,5 @@ const snake = {
       )
     }
     drawEyes(...snake.eyeVariant()[snake.course])
-  },
-
-  powerMode() {
-    snake.onFire = true
-
-    if (snake.fireTime) {
-      clearInterval(snake.fireTime)
-    }
-
-    let counter = 0
-
-    snake.fireTime = setInterval(() => {
-      clearGameArea()
-
-      snake.draw(Color.blueToGreen[counter])
-      snake.createEyes()
-      baseApple.draw(Color.YELLOW)
-      border.draw(Color.GREEN)
-
-      if (counter < Color.blueToGreen.length) {
-        counter++
-      } else {
-        clearInterval(snake.fireTime)
-        snake.onFire = false
-      }
-    }, snake.MAX_SPEED)
   }
 }

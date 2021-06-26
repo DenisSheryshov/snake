@@ -34,7 +34,7 @@ const score = {
       superApple.draw(Color.BLUE)
     }
 
-    score.total += snake.onFire ? baseApple.score * 3 : baseApple.score
+    score.total += baseApple.score
     const delay = 1500 / (score.total - score.table)
     score.write(delay)
   }

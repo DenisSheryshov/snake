@@ -5,15 +5,7 @@ const Color = {
   GREEN: 'rgb(0, 230, 0)',
   YELLOW: 'rgb(255, 255, 0)',
   RED: 'rgb(255, 0, 0)',
-  BLUE: 'rgb(34, 34, 255)',
-  blueToGreen: []
-}
-
-for (let i = 0; i <= 34; i++) {
-  Color.blueToGreen.push(
-    `rgb(${34 - i},${Math.floor(34 + i * (196 / 34))},${255 -
-      Math.floor(i * 7.5)})`
-  )
+  BLUE: 'rgb(34, 34, 255)'
 }
 
 const Shadow = {
@@ -41,43 +33,7 @@ const border = {
       border.size,
       border.size
     )
-  },
-
-  clear() {
-    if (!border.WIDTH_SHDW) {
-      border.WIDTH_SHDW = border.WIDTH + Shadow.OFFSET + Shadow.BLUR
-    }
-
-    ctx.clearRect(0, 0, cnv.width, border.WIDTH_SHDW)
-    ctx.clearRect(0, 0, border.WIDTH_SHDW + 1, border.size)
-    ctx.clearRect(0, border.size, border.size, border.WIDTH_SHDW)
-    ctx.clearRect(
-      border.size,
-      border.WIDTH_SHDW,
-      border.WIDTH_SHDW,
-      border.size
-    )
-  } //,
-
-  // anim() {
-  //   requestAnimationFrame(() => {
-  //     ctx.setLineDash([border.size, border.size])
-  //     ctx.lineDashOffset = border.lineDashOffset
-  //     border.lineDashOffset >= 0
-  //       ? (border.lineDashOffset -= 5)
-  //       : (border.lineDashOffset = border.size * 2)
-  //     border.clear()
-  //     border.draw(Color.GREEN)
-
-  //     if (border.isAnim) {
-  //       border.anim()
-  //     } else {
-  //       ctx.setLineDash([])
-  //       ctx.lineDashOffset = 0
-  //       border.draw(Color.green)
-  //     }
-  //   })
-  // }
+  }
 }
 
 const FIELD_SIZE = 720
@@ -95,14 +51,22 @@ ctx.shadowBlur = Shadow.BLUR
 ctx.shadowOffsetX = Shadow.OFFSET
 ctx.shadowOffsetY = -Shadow.OFFSET
 
-const getPixel = (x, y) => {
-  return [
-    border.WIDTH + PXL_SIZE * x,
-    Shadow.OFFSET + Shadow.BLUR + border.WIDTH + PXL_SIZE * y,
-    PXL_SIZE,
-    PXL_SIZE
-  ]
+const pixelGrid = []
+
+for (let i = 0; i < NUM_OF_PIXELS; i++) {
+  const row = []
+  for (let j = 0; j < NUM_OF_PIXELS; j++) {
+    row.push([
+      border.WIDTH + PXL_SIZE * i,
+      Shadow.OFFSET + Shadow.BLUR + border.WIDTH + PXL_SIZE * j,
+      PXL_SIZE,
+      PXL_SIZE
+    ])
+  }
+  pixelGrid.push(row)
 }
+
+const getPixel = (x, y) => pixelGrid[x][y]
 
 const clearGameArea = () => {
   ctx.clearRect(0, 0, cnv.width, cnv.width)
