@@ -7,7 +7,6 @@ const snake = {
     snake.currentAxis = 'x'
     snake.course = 'right'
     snake.speed = 300
-    snake.isAlive = true
   },
 
   draw(color) {
@@ -26,8 +25,8 @@ const snake = {
     const head = snakeBody.shift()
 
     if (snakeBody.some(item => item + '' == head + '')) {
+      clearInterval(snake.fireTime)
       timer.stop()
-      snake.isAlive = false
       snake.showFail()
     }
   },
@@ -176,20 +175,19 @@ const snake = {
     const [x, y] = getPixel(...snake.body[0])
 
     const drawEyes = (leftX, leftY, rightX, rightY) => {
-        ctx.clearRect(
-          x + PXL_SIZE + leftX,
-          y + leftY,
-          this.EYE_SIZE,
-          this.EYE_SIZE
-        )
-        ctx.clearRect(
-          x + PXL_SIZE + rightX,
-          y + rightY,
-          this.EYE_SIZE,
-          this.EYE_SIZE
-        )
+      ctx.clearRect(
+        x + PXL_SIZE + leftX,
+        y + leftY,
+        this.EYE_SIZE,
+        this.EYE_SIZE
+      )
+      ctx.clearRect(
+        x + PXL_SIZE + rightX,
+        y + rightY,
+        this.EYE_SIZE,
+        this.EYE_SIZE
+      )
     }
-
     drawEyes(...snake.eyeVariant()[snake.course])
   },
 
@@ -197,26 +195,25 @@ const snake = {
     snake.onFire = true
 
     if (snake.fireTime) {
-      clearTimeout(snake.fireTime)
+      clearInterval(snake.fireTime)
     }
 
-    const colorTransit = Color.blueToGreen()
+    let counter = 0
 
-    const changeColor = () => {
-      const { value } = colorTransit.next()
-      if (value && snake.isAlive) {
-        clearGameArea()
+    snake.fireTime = setInterval(() => {
+      clearGameArea()
 
-        snake.draw(value)
-        snake.createEyes()
-        baseApple.draw(Color.YELLOW)
-        border.draw(Color.GREEN)
+      snake.draw(Color.blueToGreen[counter])
+      snake.createEyes()
+      baseApple.draw(Color.YELLOW)
+      border.draw(Color.GREEN)
 
-        snake.fireTime = setTimeout(changeColor, snake.MAX_SPEED)
+      if (counter < Color.blueToGreen.length) {
+        counter++
       } else {
+        clearInterval(snake.fireTime)
         snake.onFire = false
       }
-    }
-    changeColor()
+    }, snake.MAX_SPEED)
   }
 }

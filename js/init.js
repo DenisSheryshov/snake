@@ -6,13 +6,14 @@ const Color = {
   YELLOW: 'rgb(255, 255, 0)',
   RED: 'rgb(255, 0, 0)',
   BLUE: 'rgb(34, 34, 255)',
+  blueToGreen: []
+}
 
-  blueToGreen: function*() {
-    for (let i = 0; i <= 34; i++) {
-      yield `rgb(${34 - i},${Math.floor(34 + i * (196 / 34))},${255 -
-        Math.floor(i * 7.5)})`
-    }
-  }
+for (let i = 0; i <= 34; i++) {
+  Color.blueToGreen.push(
+    `rgb(${34 - i},${Math.floor(34 + i * (196 / 34))},${255 -
+      Math.floor(i * 7.5)})`
+  )
 }
 
 const Shadow = {
