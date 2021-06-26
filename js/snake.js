@@ -68,7 +68,12 @@ const snake = {
       snake.speed -= 200
       snake.crawl('stop')
       snake.crawl('start')
-    } 
+    } else {
+      if (baseApple.score > 7) {
+        console.log(baseApple.score)
+        snake.powerMode()
+      }
+    }
 
     baseApple.create()
     baseApple.freshMeter()
