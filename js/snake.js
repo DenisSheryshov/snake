@@ -67,7 +67,7 @@ const snake = {
     } else {
       score.earn(apple.score)
       if (snake.speed > snake.MAX_SPEED) {
-        snake.speed = Math.round(snake.speed - snake.speed * 0.05)
+        snake.speed = Math.round(snake.speed * 0.95)
         snake.crawl('stop')
         snake.crawl('start')
       }
@@ -81,7 +81,9 @@ const snake = {
         snake.sortedBody = [...snake.body].sort(snake.bodySort)
         apple.superApple = null
         score.earn(20)
-        snake.speed = Math.min(200, snake.speed + 50)
+        if (snake.speed * 1.15 < 200) {
+          snake.speed += Math.round(snake.speed * 1.15)
+        }
         snake.crawl('stop')
         snake.crawl('start')
       }

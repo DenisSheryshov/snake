@@ -30,7 +30,7 @@ const score = {
 
     score.apples++
 
-    if (score.apples % 7 == 0) {
+    if (score.apples % 10 == 0) {
       apple.createSuper()
     }
 

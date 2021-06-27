@@ -14,7 +14,7 @@ const apple = {
       this.createTime = new Date().getTime()
       timer.allPausesLength = 0
     } else {
-      this.create()
+      this.createBase()
     }
   },
 
