@@ -2,20 +2,22 @@ const snake = {
   DEFAULT_BODY: [[4, 15], [3, 15], [2, 15], [1, 15], [0, 15]],
   MAX_SPEED: 100,
 
+  bodySort(a, b) {
+    // for shadow overlay fix
+    return a[0] - b[0] == 0 ? b[1] - a[1] : a[0] - b[0]
+  },
+
   init() {
     snake.body = [...snake.DEFAULT_BODY]
     snake.currentAxis = 'x'
     snake.course = 'right'
     snake.speed = 300
+    snake.sortedBody = [...snake.body].sort(snake.bodySort)
   },
 
   draw(color) {
-    const sortedBody = [...snake.body].sort((a, b) => {
-      return a[0] - b[0] == 0 ? b[1] - a[1] : a[0] - b[0]
-    }) // shadow overlay fix
-
     ctx.fillStyle = color
-    for (let pxl of sortedBody) {
+    for (let pxl of snake.sortedBody) {
       ctx.fillRect(...getPixel(...pxl))
     }
   },
@@ -59,7 +61,9 @@ const snake = {
 
   eatApple() {
     if (snake.body[0] + '' != baseApple.body + '') {
-      snake.body.pop()
+      const tail = snake.body.pop()
+      const idx = snake.sortedBody.indexOf(tail)
+      snake.sortedBody.splice(idx, 1)
       return
     }
 
@@ -84,6 +88,10 @@ const snake = {
     }
 
     snake.body.unshift(newHead[snake.course])
+
+    snake.sortedBody.push(newHead[snake.course])
+    snake.sortedBody.sort(snake.bodySort)
+
     snake.currentAxis =
       snake.course == 'right' || snake.course == 'left' ? 'x' : 'y'
 
