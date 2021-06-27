@@ -21,12 +21,7 @@ class Apple {
 
     this.score = 13 - Math.floor(freshValue / 60)
 
-    ctx.clearRect(
-      0,
-      cnv.width,
-      cnv.width,
-      border.WIDTH + Shadow.OFFSET + Shadow.BLUR * 2
-    )
+    ctx.clearRect(0, cnv.width, cnv.width, border.WIDTH * 4)
 
     if (freshValue < FIELD_SIZE + border.WIDTH * 2) {
       ctx.fillStyle = Color.YELLOW
@@ -38,7 +33,7 @@ class Apple {
       )
 
       if (!timer.onPause) {
-        requestAnimationFrame(this.freshMeter.bind(this))
+        setTimeout(this.freshMeter.bind(this), 50)
       }
     }
   }

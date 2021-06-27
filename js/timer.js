@@ -5,7 +5,7 @@ const timer = {
 
   area: [
     0,
-    cnv.width + border.WIDTH * 3,
+    cnv.width + border.WIDTH * 4,
     cnv.width / 2,
     cnv.height - cnv.width
   ],
@@ -29,12 +29,10 @@ const timer = {
     timer.tick = setInterval(() => {
       timer.gameTotalTime =
         new Date().getTime() - timer.gameStartTime + timer.prevSessiontTime
-
+      console.log(ctx.font)
       timer.write()
-      score.write()
     }, 200)
     timer.onPause = false
-    // border.isAnim = false
 
     if (timer.pauseStartTime) {
       timer.allPausesLength += timer.gameStartTime - timer.pauseStartTime

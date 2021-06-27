@@ -34,20 +34,46 @@ const control = () => {
   }
 }
 
-window.addEventListener('keydown', control)
+document.body.append(cnv)
 
 const startGame = () => {
+  window.addEventListener('keydown', control)
   snake.init()
-  baseApple.create()
-  baseApple.freshMeter()
-  snake.crawl('start')
-  timer.start()
   timer.allPausesLength = 0
   score.total = 0
   score.table = 0
   score.apples = 0
+
+  setTimeout(() => {
+    baseApple.create()
+    snake.crawl('start')
+
+    setTimeout(() => {
+      baseApple.createTime = new Date().getTime()
+      baseApple.freshMeter()
+      timer.start()
+      score.write()
+    }, 1000)
+  }, 1000)
 }
 
-document.body.append(cnv)
+showLoading = new Promise(resolve => {
+  ctx.fillStyle = Color.GREEN
+  let meterValue = 0
 
-startGame()
+  const increaseMeter = () => {
+    clearGameArea()
+    ctx.fillRect(border.WIDTH, cnv.height / 2.5, meterValue, cnv.height / 15)
+    ctx.fillText('Loading...', cnv.width / 3, cnv.height / 2)
+
+    if (meterValue < cnv.width - border.WIDTH - Shadow.OFFSET - Shadow.BLUR) {
+      meterValue += 7
+      requestAnimationFrame(increaseMeter)
+    } else {
+      resolve()
+    }
+  }
+  increaseMeter()
+})
+
+showLoading.then(() => startGame())

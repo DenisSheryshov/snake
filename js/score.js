@@ -5,7 +5,7 @@ const score = {
 
   area: [
     cnv.width / 2,
-    cnv.width + border.WIDTH * 3,
+    cnv.width + border.WIDTH * 4,
     cnv.width / 2,
     cnv.height - cnv.width
   ],
@@ -21,7 +21,7 @@ const score = {
     )
     if (score.table < score.total) {
       score.table++
-      score.countTimer = setTimeout(score.write, delay)
+      score.countTimer = setTimeout(score.write, snake.MAX_SPEED)
     }
   },
 
@@ -31,7 +31,6 @@ const score = {
     score.apples++
 
     score.total += baseApple.score
-    const delay = 1500 / (score.total - score.table)
-    score.write(delay)
+    score.write()
   }
 }
