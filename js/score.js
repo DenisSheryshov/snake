@@ -29,10 +29,6 @@ const score = {
     if (score.countTimer) clearTimeout(score.countTimer)
 
     score.apples++
-    if (score.apples % 7 === 0) {
-      superApple.create()
-      superApple.draw(Color.BLUE)
-    }
 
     score.total += baseApple.score
     const delay = 1500 / (score.total - score.table)

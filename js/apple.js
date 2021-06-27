@@ -1,16 +1,17 @@
 class Apple {
   create() {
-    this.body = [
+    const proposal = [
       Math.floor(Math.random() * NUM_OF_PIXELS),
       Math.floor(Math.random() * NUM_OF_PIXELS)
     ]
 
-    if (!snake.body.some(item => item + '' == this.body + '')) {
+    if (!snake.body.some(item => item + '' == proposal + '')) {
+      this.body = proposal
       this.createTime = new Date().getTime()
       timer.allPausesLength = 0
-      return
+    } else {
+      this.create()
     }
-    this.create()
   }
 
   freshMeter() {

@@ -41,6 +41,7 @@ const snake = {
       snake.draw(Color[flag ? 'GREEN' : 'RED'])
       border.draw(Color[flag ? 'GREEN' : 'RED'])
       baseApple.draw(Color.YELLOW)
+      snake.createEyes()
 
       if (counter < 4) {
         counter++
@@ -68,13 +69,7 @@ const snake = {
       snake.speed -= 200
       snake.crawl('stop')
       snake.crawl('start')
-    } else {
-      if (baseApple.score > 7) {
-        console.log(baseApple.score)
-        snake.powerMode()
-      }
     }
-
     baseApple.create()
     baseApple.freshMeter()
   },

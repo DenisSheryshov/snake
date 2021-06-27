@@ -16,16 +16,9 @@ const Shadow = {
 
 const border = {
   WIDTH: 8,
-  isAnim: false,
-  lineDashOffset: cnv.width * 2,
 
   draw(color) {
-    ctx.lineWidth = border.WIDTH
     ctx.strokeStyle = color
-
-    if (!border.size) {
-      border.size = cnv.width - border.WIDTH - Shadow.OFFSET - Shadow.BLUR
-    }
 
     ctx.strokeRect(
       border.WIDTH / 2,
@@ -45,11 +38,14 @@ cnv.height = cnv.width + 100
 
 ctx.font = 'normal 55px AnotherCastle3'
 ctx.textBaseline = 'top'
+ctx.lineWidth = border.WIDTH
 
 ctx.shadowColor = Shadow.COLOR
 ctx.shadowBlur = Shadow.BLUR
 ctx.shadowOffsetX = Shadow.OFFSET
 ctx.shadowOffsetY = -Shadow.OFFSET
+
+border.size = cnv.width - border.WIDTH - Shadow.OFFSET - Shadow.BLUR
 
 const pixelGrid = []
 
