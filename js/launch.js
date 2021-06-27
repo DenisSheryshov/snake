@@ -29,7 +29,7 @@ const control = () => {
       timer.start()
       snake.load()
       snake.crawl('start')
-      baseApple.freshMeter()
+      apple.freshMeter()
     }
   }
 }
@@ -45,12 +45,12 @@ const startGame = () => {
   score.apples = 0
 
   setTimeout(() => {
-    baseApple.create()
+    apple.createBase()
     snake.crawl('start')
 
     setTimeout(() => {
-      baseApple.createTime = new Date().getTime()
-      baseApple.freshMeter()
+      apple.createTime = new Date().getTime()
+      apple.freshMeter()
       timer.start()
       score.write()
     }, 1000)

@@ -1,6 +1,6 @@
 const snake = {
   DEFAULT_BODY: [[4, 15], [3, 15], [2, 15], [1, 15], [0, 15]],
-  MAX_SPEED: 100,
+  MAX_SPEED: 50,
 
   bodySort(a, b) {
     // for shadow overlay fix
@@ -42,7 +42,7 @@ const snake = {
       clearGameArea()
       snake.draw(Color[flag ? 'GREEN' : 'RED'])
       border.draw(Color[flag ? 'GREEN' : 'RED'])
-      baseApple.draw(Color.YELLOW)
+      apple.draw(Color.YELLOW)
       snake.createEyes()
 
       if (counter < 4) {
@@ -60,22 +60,32 @@ const snake = {
   },
 
   eatApple() {
-    if (snake.body[0] + '' != baseApple.body + '') {
+    if (snake.body[0] + '' != apple.body + '') {
       const tail = snake.body.pop()
       const idx = snake.sortedBody.indexOf(tail)
       snake.sortedBody.splice(idx, 1)
-      return
+    } else {
+      score.earn(apple.score)
+      if (snake.speed > snake.MAX_SPEED) {
+        snake.speed = Math.round(snake.speed - snake.speed * 0.05)
+        snake.crawl('stop')
+        snake.crawl('start')
+      }
+      apple.createBase()
+      apple.freshMeter()
     }
 
-    score.earn()
-
-    if (snake.speed > snake.MAX_SPEED) {
-      snake.speed -= 200
-      snake.crawl('stop')
-      snake.crawl('start')
+    if (apple.superApple) {
+      if (snake.body[0] + '' == apple.superApple + '') {
+        snake.body.length = 5
+        snake.sortedBody = [...snake.body].sort(snake.bodySort)
+        apple.superApple = null
+        score.earn(20)
+        snake.speed = Math.min(200, snake.speed + 50)
+        snake.crawl('stop')
+        snake.crawl('start')
+      }
     }
-    baseApple.create()
-    baseApple.freshMeter()
   },
 
   step() {
@@ -101,16 +111,14 @@ const snake = {
     clearGameArea()
 
     // shadow overlay checkout
-    if (
-      snake.body[0][0] > baseApple.body[0] ||
-      snake.body[0][1] < baseApple.body[1]
-    ) {
-      baseApple.draw(Color.YELLOW)
+    if (snake.body[0][0] > apple.body[0] || snake.body[0][1] < apple.body[1]) {
+      apple.draw(Color.YELLOW)
       snake.draw(Color.GREEN)
     } else {
       snake.draw(Color.GREEN)
-      baseApple.draw(Color.YELLOW)
+      apple.draw(Color.YELLOW)
     }
+
     border.draw(Color.GREEN)
     snake.createEyes()
   },

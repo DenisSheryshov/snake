@@ -11,12 +11,10 @@ body {
   justify-content: center;
   height: 100vh;
   overflow: hidden;
-  /* background-color: rgb(46, 46, 46); */
   background-color: rgb(64, 62, 68);
   align-items: center;
 }
 
 canvas {
   max-height: 100vh;
-  /* background-color: rgb(64, 62, 68); */
 }

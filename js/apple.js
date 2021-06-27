@@ -1,9 +1,13 @@
-class Apple {
-  create() {
-    const proposal = [
+const apple = {
+  getRandomPxl() {
+    return [
       Math.floor(Math.random() * NUM_OF_PIXELS),
       Math.floor(Math.random() * NUM_OF_PIXELS)
     ]
+  },
+
+  createBase() {
+    const proposal = this.getRandomPxl()
 
     if (!snake.body.some(item => item + '' == proposal + '')) {
       this.body = proposal
@@ -12,7 +16,23 @@ class Apple {
     } else {
       this.create()
     }
-  }
+  },
+
+  createSuper() {
+    const proposal = this.getRandomPxl()
+
+    if (
+      !snake.body.some(item => item + '' == proposal + '') &&
+      proposal + '' != apple.body + ''
+    ) {
+      this.superApple = proposal
+      setTimeout(() => {
+        this.superApple = null
+      }, snake.speed * 30)
+    } else {
+      this.createSuper()
+    }
+  },
 
   freshMeter() {
     const freshValue =
@@ -36,15 +56,16 @@ class Apple {
         setTimeout(this.freshMeter.bind(this), 50)
       }
     }
-  }
+  },
 
   draw(color) {
     if (this.body) {
       ctx.fillStyle = color
       ctx.fillRect(...getPixel(...this.body))
     }
+    if (this.superApple) {
+      ctx.fillStyle = Color.BLUE
+      ctx.fillRect(...getPixel(...this.superApple))
+    }
   }
 }
-
-const baseApple = new Apple()
-const superApple = new Apple()

@@ -29,7 +29,6 @@ const timer = {
     timer.tick = setInterval(() => {
       timer.gameTotalTime =
         new Date().getTime() - timer.gameStartTime + timer.prevSessiontTime
-      console.log(ctx.font)
       timer.write()
     }, 200)
     timer.onPause = false

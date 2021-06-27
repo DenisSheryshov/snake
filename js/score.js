@@ -25,12 +25,16 @@ const score = {
     }
   },
 
-  earn() {
+  earn(num) {
     if (score.countTimer) clearTimeout(score.countTimer)
 
     score.apples++
 
-    score.total += baseApple.score
+    if (score.apples % 7 == 0) {
+      apple.createSuper()
+    }
+
+    score.total += num
     score.write()
   }
 }
